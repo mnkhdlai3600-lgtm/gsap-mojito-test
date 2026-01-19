@@ -8,7 +8,7 @@ import { useMediaQuery } from "react-responsive";
 
 const Hero = () => {
   const videoUrl =
-    "https://qns3itlhz0br8ika.public.blob.vercel-storage.com/output.mp4";
+    "https://qns3itlhz0br8ika.public.blob.vercel-storage.com/input.mp4";
 
   const videoRef = useRef();
   const isMobile = useMediaQuery({ maxWidth: 767 });
