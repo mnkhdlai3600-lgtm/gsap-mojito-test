@@ -1,3 +1,5 @@
+"use client";
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
@@ -5,8 +7,10 @@ import { useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 
 const Hero = () => {
-  const videoRef = useRef();
+  const videoUrl =
+    "https://qns3itlhz0br8ika.public.blob.vercel-storage.com/output.mp4";
 
+  const videoRef = useRef();
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useGSAP(() => {
@@ -20,7 +24,7 @@ const Hero = () => {
 
     heroSplit.chars.forEach((char) => char.classList.add("text-gradient"));
 
-    gsap.from(heroSplit.chars, {
+    (gsap.from(heroSplit.chars, {
       yPercent: 100,
       duration: 1.8,
       ease: "expo.out",
@@ -33,12 +37,12 @@ const Hero = () => {
         ease: "expo.out",
         stagger: 0.06,
         delay: 1,
-      });
+      }));
 
     gsap
       .timeline({
         scrollTrigger: {
-          trigger: "#hero",
+          trigger: videoRef.current,
           start: "top top",
           end: "bottom top",
           scrub: true,
@@ -106,13 +110,7 @@ const Hero = () => {
       </section>
 
       <div className="video absolute inset-0">
-        <video
-          ref={videoRef}
-          muted
-          playsInline
-          preload="auto"
-          src="/videos/output.mp4"
-        />
+        <video ref={videoRef} muted playsInline preload="auto" src={videoUrl} />
       </div>
     </>
   );
