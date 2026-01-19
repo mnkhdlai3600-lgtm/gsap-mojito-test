@@ -1,5 +1,3 @@
-"use client";
-
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
@@ -7,10 +5,8 @@ import { useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 
 const Hero = () => {
-  const videoUrl =
-    "https://qns3itlhz0br8ika.public.blob.vercel-storage.com/input.mp4";
-
   const videoRef = useRef();
+
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useGSAP(() => {
@@ -22,27 +18,29 @@ const Hero = () => {
       type: "lines",
     });
 
+    // Apply text-gradient class once before animating
     heroSplit.chars.forEach((char) => char.classList.add("text-gradient"));
 
-    (gsap.from(heroSplit.chars, {
+    gsap.from(heroSplit.chars, {
       yPercent: 100,
       duration: 1.8,
       ease: "expo.out",
       stagger: 0.06,
-    }),
-      gsap.from(paragraphSplit.lines, {
-        opacity: 0,
-        yPercent: 100,
-        duration: 1.8,
-        ease: "expo.out",
-        stagger: 0.06,
-        delay: 1,
-      }));
+    });
+
+    gsap.from(paragraphSplit.lines, {
+      opacity: 0,
+      yPercent: 100,
+      duration: 1.8,
+      ease: "expo.out",
+      stagger: 0.06,
+      delay: 1,
+    });
 
     gsap
       .timeline({
         scrollTrigger: {
-          trigger: videoRef.current,
+          trigger: "#hero",
           start: "top top",
           end: "bottom top",
           scrub: true,
@@ -89,6 +87,8 @@ const Hero = () => {
         />
 
         <div className="body">
+          {/* <img src="/images/arrow.png" alt="arrow" className="arrow" /> */}
+
           <div className="content">
             <div className="space-y-5 hidden md:block">
               <p>Cool. Crisp. Classic.</p>
@@ -110,7 +110,13 @@ const Hero = () => {
       </section>
 
       <div className="video absolute inset-0">
-        <video ref={videoRef} muted playsInline preload="auto" src={videoUrl} />
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          preload="auto"
+          src="/videos/output.mp4"
+        />
       </div>
     </>
   );
