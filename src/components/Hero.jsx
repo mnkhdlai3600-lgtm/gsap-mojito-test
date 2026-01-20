@@ -6,12 +6,17 @@ import { useMediaQuery } from "react-responsive";
 
 const Hero = () => {
   const videoRef = useRef();
+
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  const frameCount = isMobile ? 155 : 310;
 
   useGSAP(() => {
-    const heroSplit = new SplitText(".title", { type: "chars, words" });
-    const paragraphSplit = new SplitText(".subtitle", { type: "lines" });
+    const heroSplit = new SplitText(".title", {
+      type: "chars, words",
+    });
+
+    const paragraphSplit = new SplitText(".subtitle", {
+      type: "lines",
+    });
 
     heroSplit.chars.forEach((char) => char.classList.add("text-gradient"));
 
@@ -44,46 +49,24 @@ const Hero = () => {
       .to(".left-leaf", { y: -200 }, 0)
       .to(".arrow", { y: 100 }, 0);
 
-    const canvas = videoRef.current;
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = 960;
-    canvas.height = 540;
-
-    const images = [];
-    const frame = { index: 0 };
-
-    for (let i = 1; i <= frameCount; i++) {
-      const img = new Image();
-      img.src = `/videos/frames/frame_${String(i).padStart(4, "0")}.webp`;
-      images.push(img);
-    }
-
-    const render = () => {
-      const img = images[frame.index];
-      if (!img) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-
-    images[0].onload = render;
-
     const startValue = isMobile ? "top 50%" : "center 60%";
     const endValue = isMobile ? "120% top" : "bottom top";
 
-    gsap.to(frame, {
-      index: frameCount - 1,
-      snap: "index",
-      ease: "none",
+    let tl = gsap.timeline({
       scrollTrigger: {
-        trigger: canvas,
+        trigger: "video",
         start: startValue,
         end: endValue,
         scrub: true,
         pin: true,
       },
-      onUpdate: render,
     });
+
+    videoRef.current.onloadedmetadata = () => {
+      tl.to(videoRef.current, {
+        currentTime: videoRef.current.duration,
+      });
+    };
   }, []);
 
   return (
@@ -103,8 +86,6 @@ const Hero = () => {
         />
 
         <div className="body">
-          {/* <img src="/images/arrow.png" alt="arrow" className="arrow" /> */}
-
           <div className="content">
             <div className="space-y-5 hidden md:block">
               <p>Cool. Crisp. Classic.</p>
@@ -125,9 +106,14 @@ const Hero = () => {
         </div>
       </section>
 
-      {/* FRAME SEQUENCE CANVAS */}
       <div className="video absolute inset-0">
-        <canvas ref={videoRef} />
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          preload="auto"
+          src="/videos/output.mp4"
+        />
       </div>
     </>
   );
